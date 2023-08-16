@@ -77,9 +77,6 @@ Various collection-related utilities.
 - `ToStringTable(ScriptData)`: Convert code source to a key-value pair table.
 ---
 
-These utilities provided by VBLua.Core aim to simplify common tasks in C# .NET projects. Feel free to explore and use these utilities to enhance your project development.
-# Widget Examples Documentation
-
 ## Elements
 
 ## Buttons
