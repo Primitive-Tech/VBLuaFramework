@@ -126,3 +126,66 @@ An image is displayed using the `display.newImage` function. The code sets the i
 ## Custom Widgets
 
 The code includes two custom functions to create custom widgets: `createStar` and `createCircle`. These functions return display objects for a star and a circle, respectively. They showcase how to create custom shapes with image fill and stroke.
+
+# Command Code Conversion Guide
+
+Welcome to the Command Code Conversion Guide! This guide aims to help you transition between Lua and VB.NET code by providing equivalent code snippets for various common commands. If you're familiar with Lua and looking to work with VB.NET, or vice versa, this guide is here to assist you.
+
+## Local Command Code Equivalents
+
+- `require`:
+    - VBLua: `using`, `imports`, `Import`, `Imports`
+- `nil`:
+    - VBLua: `null`, `nothing`, `Nothing`
+- `local`:
+    - VBLua: `Dim`, `dim`, `Private`, `private`
+- `= number`:
+    - VBLua: `as Integer`, `as integer`, `as Integer`, `as int`
+- `= {}`:
+    - VBLua: `as table`, `as Table`
+- `= string`:
+    - VBLua: `as String`, `as String`
+- `end`:
+    - VBLua: `next`, `Next`
+- `repeat`:
+    - VBLua: `loop`
+- `,`:
+    - VBLua: `to`, `by`
+- `elseif`:
+    - VBLua: `elif `, `else if `, `elseif `
+- `then`:
+    - VBLua: `Then `
+- `nil`:
+    - VBLua: `Nothing`, `nothing`, `null`
+- `in pairs(`:
+    - VBLua: `from `, `From `
+- `in ipairs(`:
+    - VBLua: `To `, `To `, `outof `, `outof `
+- `pcall(`:
+    - VBLua: `try:`, `Try:`
+- `for `:
+    - VBLua: `foreach `, `ForEach `, `For Each `
+- `end`:
+    - VBLua: `end for`, `end while`, `end sub`, `end function`, `End For`, `End While`, `End Sub`, `End Function`, `End Class`
+- `..`:
+    - VBLua: `&`
+- `~=`:
+    - VBLua: `<>`, `!=`
+- `tostring(`:
+    - VBLua: `cStr(`
+- `tonumber(`:
+    - VBLua: `cInt(`
+- `function `:
+    - VBLua: `void `, `Void `, `sub `, `Sub `, `Function `, `function `
+- `function()`:
+    - VBLua: `del`, `delegate`
+- `)do `:
+    - VBLua: `=>`, `Do `
+- `print`:
+    - VBLua: `log`, `Console.Write(`
+- `os.time()`:
+    - VBLua: `me.Time()`, `Me.Time()`
+- `os.clock()`:
+    - VBLua: `me.Clock()`, `Me.Clock()`
+- `os.difftime`:
+    - VBLua: `Difftime:`
