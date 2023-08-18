@@ -100,6 +100,6 @@ local preparing= ConvertCode(CreateCode())
 local preparing2= ReverseConvertCode(CreateCode())
 print("--####################################################")
 print(toStr(preparing))
-print(tostring(preparing2))
+print(tostring(preparing2))r2
 
 return preparing or false

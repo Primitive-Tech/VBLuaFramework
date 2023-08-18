@@ -13,7 +13,7 @@ local RoundButton = widget.newButton({
     label = "RoundButton",
     x = 100,
     y = 100,
-    onPress = function(event)
+    onPress = function(event) print("Click1")
     end
 })
 
@@ -32,6 +32,7 @@ scrollWidget:addEventListener("scroll", function(event)
     if event.phase == "ended" then
         print("Aktuelle ScrollPosition: " .. event.target:getContentPosition())
     end
+end)
 --Switch:
 
 local Switch = widget.newSwitch({
@@ -120,18 +121,18 @@ Image.x = 100
 Image.y = 100
 
 ----------------------------------------------
-function createStar(halfW,halfH,file)
-    local vertices = { 0,-110, 27,-35, 105,-35, 43,16, 65,90, 0,45, -65,90, -43,15, -105,-35, -27,-35, }    
+function createStar(halfW,halfH,file,strokeW,mult)
+    local vertices = { 0*mult,-110*mult, 27*mult,-35*mult, 105*mult,-35*mult, 43*mult,16*mult, 65*mult,90*mult, 0*mult,45*mult, -65*mult,90*mult, -43*mult,15*mult, -105*mult,-35*mult, -27*mult,-35*mult }    
     local star = display.newPolygon( halfW, halfH, vertices )
     star.fill = { type="image", filename=file }
-    star.strokeWidth  = 10
+    star.strokeWidth  = strokeW
     star:setStrokeColor( 1, 0, 0 )
     return star
 end
 
-function createCircle( w, h, radius,strokeWidth )
+function createCircle( w, h, radius,strokeWidth,fill )
     local myCircle = display.newCircle(w, h, radius  )
-    myCircle:setFillColor( 0.5 )
+    myCircle:setFillColor( fill )--0.5
     myCircle.strokeWidth = strokeWidth
     myCircle:setStrokeColor( 1, 0, 0 )
     return myCircle

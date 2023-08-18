@@ -87,7 +87,7 @@ namespace VBLua.Core
 
         }
 
-        public static string pathIDE = Settings.Default.path1; public const string AppSaves = "projects/";
+        public static string pathIDE = Directory.GetCurrentDirectory(); public const string AppSaves = "projects/";
         public static string classPath { get => AppSaves + "Classes.wrze"; }
         public static string mainPath { get => AppSaves + "mainCode.wrze"; }
         public static string scenePath { get => AppSaves + "sceneCode.wrze"; }
