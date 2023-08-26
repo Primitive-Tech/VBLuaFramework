@@ -9,15 +9,14 @@ using Newtonsoft.Json.Linq;
 
 namespace VBLua.Core
 {
-    public class Syntaxer
+    public static class Syntaxer
     {
-        Script mes; public string code="";
-        public Syntaxer(string name) { mes = new("Syntaxer"+ ".lua", new() { }); code = me(); }
-       
-        protected string? me() {
+        static Script mes; public static string? code="";
 
+        public static string? Convert(string inputCode) {
+            mes = new("Syntaxer" + ".lua", new() {("input",inputCode) }); mes.isLocalFile = true;
             mes.Start();
-            return mes.Output.First()?.ToStr();
+            return mes.Body["output"]?.IntToStr();
         }
     
     } 
@@ -102,7 +101,7 @@ namespace VBLua.Core
         {
             Name = name;
             Engine = new(); insertParams(args);
-
+            this.Code= System.IO.File.ReadAllText(File);
             Output = Engine.DoFile(File); RespBody = Output;
         }
 
@@ -136,6 +135,7 @@ namespace VBLua.Core
                 ScriptArgs.Add(variable.Item1, variable.Item2);//SaveforBackupReasons
                 Engine[variable.Item1] = variable.Item2;//Apply
             } 
+
         }
         //===================================================================================================
 
@@ -169,32 +169,24 @@ namespace VBLua.Core
                         Engine[item.Key] = item.Value;
                     }
                 }
-                try
-                {
                     switch (isLocalFile)
                     {
                         case false:
                             Output = Engine.DoString(Code);
                             StatusResponse = (bool)(Output.First());
-                            RespBody = (object[])Output[1];
-                            Succeed = (bool)(Output[2]);
-                            ErrorCode = (string)(Output[3]);
+                            RespBody = (object[])Output;
+                            Succeed = (bool)(Output[0]);
+                            ErrorCode = (string)(Output[2]);
                             break;
                         case true:
-                            Output = Engine.DoFile(DataPath);
+                            Output = Engine.DoFile(File);
                             StatusResponse = (bool)(Output.First());
-                            RespBody = (object[])Output[1];
-                            Succeed = (bool)(Output[2]);
-                            ErrorCode = (string)(Output[3]);
+                            RespBody = (object[])Output;
+                            Succeed = (bool)(Output[0]);
+                            ErrorCode = (string)(Output[2]);
                             break;
                     }
-                }
-                catch
-                {
-                    Output = new object[3] { false,new object[]{}, "Error while Executing!" };
-                    StatusResponse = false;
-                }
-            }
+                }           
             return Output;
         }
     }

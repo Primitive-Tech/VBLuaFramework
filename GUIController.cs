@@ -4,6 +4,11 @@ using System.Text.RegularExpressions;using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using VBLua.IDE;
+using PrimitiveServerV2;
+using System.Configuration;
+using System.Security.Permissions;
+using System.Text;
+
 namespace VB.Lua.GUIController
 {
     public interface Loader
@@ -61,9 +66,10 @@ namespace VB.Lua.GUIController
             // Definition der Syntax-Hervorhebungsregeln
             var syntaxRules = new[]
             {
-                new { RegexPattern = @"\b(Imports|Module|Class|Sub|Function|If|Then|Else|End\sIf|For|Next|While|Do|Loop|Exit|Return)\b", Color = Color.Blue },
+                new { RegexPattern = @"\b(Private|Public|Dim|Imports|Module|Class|Void|Sub|Function|If|Then|Else|End\sIf|For|Next|While|Do|Loop|Exit|Break|Return|As)\b", Color = Color.Blue },
                 new { RegexPattern = @"""([^""]|"""")*""", Color = Color.Red },
-                new { RegexPattern = @"'(.*)$", Color = Color.Green }
+                new { RegexPattern = @"'(.*)$", Color = Color.Green },
+                 new { RegexPattern = @"\{|\}|\[|\]|\|=|!|:", Color = Color.Red }
             };
 
             // Durchlaufen der Syntaxregeln und Anwenden der Formatierung
@@ -79,6 +85,28 @@ namespace VB.Lua.GUIController
                 }
             }
         }
+
+        private static void ConvertKeywordsToUppercase(RichTextBox richTextBox)
+        {
+            string[] keywords = {
+                "private", "public", "dim", "imports", "module", "class",
+                "void", "sub", "function", "if", "then", "else", "endif",
+                "for", "foreach", "next", "while", "do", "loop",
+                "exit", "break", "return", "as"
+            };
+            string text = richTextBox.Text;
+            StringBuilder newText = new StringBuilder(text);
+
+            foreach (string keyword in keywords)
+            {
+                string pattern = @"\b" + keyword + @"\b";
+                string replacement = char.ToUpper(keyword[0]) + keyword.Substring(1);
+                newText.Replace(keyword, replacement);
+            }
+            richTextBox.Text = newText.ToString();
+        }
+
+
         public static void HighlightOwnCode(RichTextBox richTextBox,string syntax= "lua")
         {         
             // Löscht zuvor angewendete Formatierungen
@@ -88,16 +116,18 @@ namespace VB.Lua.GUIController
             // Definition der Syntax-Hervorhebungsregeln für VB.NET
             var syntaxRulesVBL = new[]
             {
-                new { RegexPattern = @"\b(private|public|Dim|imports|Module|Class|void|sub|function|if|then|else|end\sIf|For|next|while|do|loop|exit|return)\b", Color = Color.Blue },
+                new { RegexPattern = @"\b(Private|Public|Dim|Imports|Module|Class|Void|Sub|Function|If|Then|Else|End\sIf|For|ForEach|Next|While|Do|Loop|Exit|Break|Return|As)\b", Color = Color.Blue },
                 new { RegexPattern = @"""([^""]|"""")*""", Color = Color.Red },
-                new { RegexPattern = @"'(.*)$", Color = Color.Green }
+                new { RegexPattern = @"'(.*)$", Color = Color.Green },
+                 new { RegexPattern = @"\{|\}|\[|\]|\|=|!|:", Color = Color.Red }
             };
             var syntaxRulesLua = new[]{
-                    new { RegexPattern = @"\b(local|function|if|then|else|end|for|in|while|do|repeat|until|return)\b", Color = Color.Blue },
+                    new { RegexPattern = @"\b(local|function|if|then|else|end|for|in|while|do|repeat|until|return|pairs|ipairs|)\b", Color = Color.Blue },
                     new { RegexPattern = @"--(.*)$", Color = Color.Green },
                     new { RegexPattern = @"\b(nil|true|false)\b", Color = Color.Red },
-                    new { RegexPattern = @"""([^""]|"""")*""", Color = Color.Red }
-            }; 
+                    new { RegexPattern = @"""([^""]|"""")*""", Color = Color.Red },
+                    new { RegexPattern = @"\{|\}|\[|\]|\|=|!|:", Color = Color.Red }
+            };
 
             if (syntax=="lua") { 
                 // Durchlaufen der Syntaxregeln und Anwenden der Formatierung
@@ -117,6 +147,8 @@ namespace VB.Lua.GUIController
             }
             else
             {
+                ConvertKeywordsToUppercase(richTextBox);
+
                 // Durchlaufen der Syntaxregeln und Anwenden der Formatierung
                 foreach (var rule in syntaxRulesVBL)
                 {
@@ -129,6 +161,8 @@ namespace VB.Lua.GUIController
                         richTextBox.SelectionColor = rule.Color;
                     }
                 }
+                richTextBox.SelectionStart = richTextBox.Text.Length;
+                richTextBox.SelectionLength = 0;
             }
         }
     }
@@ -389,18 +423,18 @@ public static class ControlHighlighter
             }
         }
 
+
     public partial class Solar2DRadioButtonControl : Panel
-    {
-        private List<RadioButton> radioButtons; private RadioButton radioButton1;//private Panel this;
-        private string radioGroupID { get => this.Name; set => this.Name = value; } public string radioButtonsCode { get => GetLuaCode(); } string txt = "xx";public string Txt { get => txt; set => txt = value; }
-
-        public Solar2DRadioButtonControl(string name,int number )
         {
-            radioButtons = new(); this.Size = new(200,200);this.BackColor = Color.Transparent; this.ForeColor = Color.Black;
-                this.Name = name;  this.AutoSize = true;InitializeRadioButtons(number); 
-        }
+            private List<RadioButton> radioButtons; private RadioButton radioButton1;//private Panel this;
+            private string radioGroupID { get => this.Name; set => this.Name = value; } public string radioButtonsCode { get => GetLuaCode(); } string txt = "xx";public string Txt { get => txt; set => txt = value; }
 
-        private void InitializeRadioButtons(int number)
+            public Solar2DRadioButtonControl(string name,int number )
+            {
+                radioButtons = new(); this.Size = new(200,200);this.BackColor = Color.Transparent; this.ForeColor = Color.Black;
+                    this.Name = name;  this.AutoSize = true;InitializeRadioButtons(number); 
+            }
+            private void InitializeRadioButtons(int number)
             {
                 this.Text = radioGroupID;
                 for (int i = 0; i< number; i++) { 
@@ -414,19 +448,16 @@ public static class ControlHighlighter
                     radioButton1.CheckedChanged += RadioButton_CheckedChanged;
             radioButton1.Name = "radioButton_" + i.ToStr(); this.radioButtons.Add(radioButton1);
             this.Controls.Add(radioButton1);
+                }     
+            }
+
+            private void RadioButton_CheckedChanged(object sender, EventArgs e){
+                RadioButton radioButton = (RadioButton)sender ;
+                if (radioButton.Checked)
+                {
+                    radioButton1.Checked = (radioButton == radioButton1);
                 }
-           
             }
-
-            private void RadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            RadioButton radioButton = sender as RadioButton;
-
-            if (radioButton.Checked)
-            {
-                radioButton1.Checked = (radioButton == radioButton1);
-            }
-        }
 
         public string RadioButton1ID
         {
@@ -456,6 +487,80 @@ public static class ControlHighlighter
             luaCode += $"\nscene.view:insert({this.Name})";
                 return luaCode;
         }
-    }
+        }
+
+        //##################################################################################################################################
+        [ToolboxItem(true), DesignTimeVisible(true)]
+        public partial class Solar2DTableControl : DataGridView
+        {
+            private List<dynamic> ListBoxes;  private ListBox ListBox1;//private Panel this;
+            public string ListBoxCode { get => GetLuaCodeFromTable(); }
+   
+
+            public Solar2DTableControl(string name,List<dynamic> dataframe)
+            {
+                ListBoxes = new(); this.Name = name; this.AutoSize = true; ListBoxes = dataframe;
+                this.Size = new Size(500, 250); this.BackColor = Color.White; this.ForeColor = Color.Black;
+                InitializeListBoxs(ListBoxes.Count());
+            }
+
+            private void InitializeListBoxs(int number)
+            {           
+                this.Location = new Point(this.Location.X + 4, this.Location.Y + (this.Size.Height / 2) - (number * 2));
+                this.ColumnCount = number;
+                this.ColumnHeadersDefaultCellStyle.BackColor = Color.Navy;
+                this.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+                this.ColumnHeadersDefaultCellStyle.Font =
+                    new Font(this.Font, FontStyle.Bold);
+
+                this.AutoSizeRowsMode =
+                    DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+                this.ColumnHeadersBorderStyle =
+                    DataGridViewHeaderBorderStyle.Single;
+                this.CellBorderStyle = DataGridViewCellBorderStyle.Single;
+                this.GridColor = Color.Black;
+                this.RowHeadersVisible = false;
+
+                this.SelectionMode =
+                    DataGridViewSelectionMode.FullRowSelect;
+                this.MultiSelect = false;
+                this.Dock = DockStyle.Fill;
+
+                for (int i = 0; i < number; i++)
+                {
+                    string gameObject = "GameObject_" + i.ToStr()+"_" + ListBoxes[i].id; string gameObjectVariable ="::";
+                    this.Columns[i].Name = i.ToStr() + gameObjectVariable;
+                    this.Columns[i].DisplayIndex = 3; this.Rows.Add(gameObject); this.Columns[i].DefaultCellStyle.Font =
+                    new Font(this.DefaultCellStyle.Font, FontStyle.Italic);
+
+                }
+            }
+            [
+            Category("Console_Specifications"),
+            Description("Handles Windows- and Scripting- and PrimitiveServer-CommandLine.")
+            ]           
+            [SettingsDescription("Rescources and Design")]
+            public List<Image> Images => new();
+
+
+            public string GetLuaCodeFromTable()
+            {
+                string luaCode = @"local function onRowRender( event )
+                            local row = event.row
+                            local rowHeight = row.contentHeight local rowWidth = row.contentWidth
+                            local rowTitle = display.newText( row, ""Row "" .. row.index, 0, 0, nil, 14 )
+                            rowTitle:setFillColor( 0 ) 
+                            rowTitle.anchorX = 0
+                            rowTitle.x = 0  rowTitle.y = rowHeight * 0.5
+                        end";
+                luaCode += "\n\r";
+                luaCode+= $@"local {this.Name} = widget.newTableView({this.Name},{{
+                            id = ""{this.Name}"", left = {this.Location.X},top = {this.Location.X},height = {this.Size.Width}, width={this.Size.Height} ,onRowRender = onRowRender,onRowTouch = onRowTouch,listener = scrollListener
+                        }})"; //{this.Name}.x = {this.Name}.x    {this.Name}.y = {this.Name}.y + {this.Name}.height";
+
+                luaCode += $"\nscene.view:insert({this.Name})\n";
+                return luaCode;
+            }
+        }
     }
 }
