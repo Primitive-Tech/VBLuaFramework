@@ -1,7 +1,7 @@
 local composer = require("composer")
 local widget = require("widget")
 --#########################################################################################
-local Button = widget.newButton({
+Button = widget.newButton({
     label = "Button",
     x = 100,
     y = 100,
@@ -9,7 +9,7 @@ local Button = widget.newButton({
         -- Code, der bei Klick auf den Button ausgeführt wird        button:setLabel("Clicked!") -- Ändert den Text des Buttons nach dem Klick
     end
 })
-local RoundButton = widget.newButton({
+RoundButton = widget.newButton({
     label = "RoundButton",
     x = 100,
     y = 100,
@@ -19,7 +19,7 @@ local RoundButton = widget.newButton({
 
 --TextField:
 
-local textField = native.newTextField(100, 150, 200, 30)
+textField = native.newTextField(100, 150, 200, 30)
 textField:addEventListener("userInput", function(event)
     if event.phase == "ended" or event.phase == "submitted" then
         print("Eingegebener Text: " .. event.target.text)
@@ -27,7 +27,7 @@ textField:addEventListener("userInput", function(event)
 end)
 
 --UP/Down Scroller:
-local ScrollWidget = createScrollWidget()
+ScrollWidget = createScrollWidget()
 scrollWidget:addEventListener("scroll", function(event)
     if event.phase == "ended" then
         print("Aktuelle ScrollPosition: " .. event.target:getContentPosition())
@@ -35,7 +35,7 @@ scrollWidget:addEventListener("scroll", function(event)
 end)
 --Switch:
 
-local Switch = widget.newSwitch({
+Switch = widget.newSwitch({
     x = 100,
     y = 250,
     onPress = function(event)
@@ -46,7 +46,7 @@ local Switch = widget.newSwitch({
 })
 --Slider:
 
-local Slider = widget.newSlider({
+Slider = widget.newSlider({
     x = 100,
     y = 300,
     listener = function(event)
@@ -57,7 +57,7 @@ local Slider = widget.newSlider({
 })
 --PickerWheel:
 
-local PickerWheel = widget.newPickerWheel({
+PickerWheel = widget.newPickerWheel({
     x = 100,
     y = 350
 })
@@ -74,7 +74,7 @@ end)
 
 --ToggleButton:
 
-local ToggleButton = widget.newSwitch({
+ToggleButton = widget.newSwitch({
     style = "toggle",
     x = 100,
     y = 400,
@@ -86,7 +86,7 @@ local ToggleButton = widget.newSwitch({
 })
 --Stepper:
 
-local Stepper = widget.newStepper({
+Stepper = widget.newStepper({
     x = 100,
     y = 500,
     onPress = function(event)
@@ -100,25 +100,33 @@ local tabButtons = {
     { label="First", defaultFile="button1.png", overFile="button1-down.png", width = 32, height = 32, onPress= function() end, selected=true },
     { label="Second", defaultFile="button2.png", overFile="button2-down.png", width = 32, height = 32, onPress=onSecondView },
 }
-local TabBar = widget.newTabBar({
+
+TabBar = widget.newTabBar({
     x = 100,
     y = 550,  
     top = display.contentHeight - 50,   -- 50 is default height for tabBar widget
     buttons = tabButtons
 })
 
+
+ 
+
 --#########################################################################################
 --ImageRect:
+function createImage(file,x,y,w,h )
+    local ImageRect = display.newImageRect(file, w, h)
+    ImageRect.x = y
+    ImageRect.y = y
+    return Image
 
-local ImageRect = display.newImageRect("image.png", 100, 100)
-ImageRect.x = 100
-ImageRect.y = 100
+end
 
---Image:
-
-local Image = display.newImage("image.png")
-Image.x = 100
-Image.y = 100
+function createImageTexture(file,x,y,w,h )
+    local Image = display.newImage(file,w,h)
+    Image.x = x
+    Image.y = y
+    return Image
+end
 
 ----------------------------------------------
 function createStar(halfW,halfH,file,strokeW,mult)
