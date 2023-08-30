@@ -60,23 +60,21 @@ namespace VBLua.IDE
             saveProjectToolStripMenuItem = new ToolStripMenuItem();
             saveSceneToolStripMenuItem = new ToolStripMenuItem();
             loadToolStripMenuItem = new ToolStripMenuItem();
-            DB = new ToolStripMenuItem();
-            Scripting = new ToolStripMenuItem();
             TestButton = new ToolStripMenuItem();
+            DebuggerClick = new ToolStripMenuItem();
             toolStripTextBox1 = new ToolStripTextBox();
             colorDialog1 = new ColorDialog();
             ScreenPanel = new Panel();
-            CodeEdit = new Input();
             mainmenustrip.SuspendLayout();
             SuspendLayout();
             // 
             // mainmenustrip
             // 
-            mainmenustrip.BackColor = Color.DodgerBlue;
+            mainmenustrip.BackColor = Color.MediumTurquoise;
             resources.ApplyResources(mainmenustrip, "mainmenustrip");
             mainmenustrip.GripStyle = ToolStripGripStyle.Visible;
             mainmenustrip.ImageScalingSize = new Size(20, 20);
-            mainmenustrip.Items.AddRange(new ToolStripItem[] { SceneAusw, NewElement, Composer, File, DB, Scripting, TestButton, toolStripTextBox1 });
+            mainmenustrip.Items.AddRange(new ToolStripItem[] { SceneAusw, NewElement, Composer, File, TestButton, DebuggerClick, toolStripTextBox1 });
             mainmenustrip.Name = "mainmenustrip";
             mainmenustrip.RenderMode = ToolStripRenderMode.System;
             // 
@@ -268,24 +266,19 @@ namespace VBLua.IDE
             loadToolStripMenuItem.Name = "loadToolStripMenuItem";
             resources.ApplyResources(loadToolStripMenuItem, "loadToolStripMenuItem");
             // 
-            // DB
-            // 
-            DB.Name = "DB";
-            DB.Padding = new Padding(5, 0, 20, 0);
-            resources.ApplyResources(DB, "DB");
-            // 
-            // Scripting
-            // 
-            Scripting.Name = "Scripting";
-            Scripting.Padding = new Padding(5, 0, 20, 0);
-            resources.ApplyResources(Scripting, "Scripting");
-            // 
             // TestButton
             // 
             TestButton.Name = "TestButton";
             TestButton.Padding = new Padding(5, 0, 20, 0);
             resources.ApplyResources(TestButton, "TestButton");
             TestButton.Click += TestButton_Click;
+            // 
+            // DebuggerClick
+            // 
+            DebuggerClick.Name = "DebuggerClick";
+            DebuggerClick.Padding = new Padding(1, 0, 1, 0);
+            resources.ApplyResources(DebuggerClick, "DebuggerClick");
+            DebuggerClick.Click += openDebugger;
             // 
             // toolStripTextBox1
             // 
@@ -299,21 +292,14 @@ namespace VBLua.IDE
             resources.ApplyResources(ScreenPanel, "ScreenPanel");
             ScreenPanel.BackColor = Color.AliceBlue;
             ScreenPanel.Name = "ScreenPanel";
+            ScreenPanel.Paint += ScreenPanel_Paint;
             ScreenPanel.MouseClick += ScreenPanel_Reset;
-            // 
-            // CodeEdit
-            // 
-            CodeEdit.BackColor = SystemColors.HighlightText;
-            resources.ApplyResources(CodeEdit, "CodeEdit");
-            CodeEdit.Name = "CodeEdit";
-            CodeEdit.ShowSelectionMargin = true;
             // 
             // Designer
             // 
             resources.ApplyResources(this, "$this");
             AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.SteelBlue;
-            Controls.Add(CodeEdit);
             Controls.Add(mainmenustrip);
             Controls.Add(ScreenPanel);
             DoubleBuffered = true;
@@ -336,13 +322,11 @@ namespace VBLua.IDE
 
         private MenuStrip mainmenustrip;
         private ToolStripMenuItem File;
-        private ToolStripMenuItem DB;
         private ToolStripMenuItem NewElement;
         private ColorDialog colorDialog1;
         private SolarDialog_1 sd;
         private ToolStripComboBox SceneAusw;
         private ToolStripMenuItem Composer;
-        private ToolStripMenuItem Scripting;
         private ToolStripMenuItem Buttons;
         private ToolStripMenuItem Geometrics;
         private ToolStripMenuItem Graphics;
@@ -368,9 +352,9 @@ namespace VBLua.IDE
         private ToolStripMenuItem animateToolStripMenuItem;
         private ToolStripMenuItem spriteToolStripMenuItem;
         private ToolStripMenuItem specialEffectsToolStripMenuItem;
-        private Input CodeEdit;
         private ToolStripTextBox toolStripTextBox1;
         private ToolStripMenuItem newToolStripMenuItem;
         private ToolStripMenuItem RadioButton;
+        private ToolStripMenuItem DebuggerClick;
     }
 }

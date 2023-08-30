@@ -11,7 +11,7 @@ namespace VBLua.Core
     //========= ======================================================================================================================== ==========================
     public class Scene : AppCode
     {
-        public Size AppRes = new(320, 480); public Size Res= new(900, 540); public static string? projektname;//900; 540
+        public Size AppRes = new(320, 480); public Size Res= new(880, 580-34); public static string? projektname;//900; 540
         private string Name; public string name { get => Name; set => Name = value; }
 
         public string? Code; private string? _Code { get => _Code; }

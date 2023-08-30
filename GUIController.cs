@@ -118,15 +118,17 @@ namespace VB.Lua.GUIController
             {
                 new { RegexPattern = @"\b(Private|Public|Dim|Imports|Module|Class|Void|Sub|Function|If|Then|Else|End\sIf|For|ForEach|Next|While|Do|Loop|Exit|Break|Return|As)\b", Color = Color.Blue },
                 new { RegexPattern = @"""([^""]|"""")*""", Color = Color.Red },
-                new { RegexPattern = @"'(.*)$", Color = Color.Green },
-                 new { RegexPattern = @"\{|\}|\[|\]|\|=|!|:", Color = Color.Red }
+                new { RegexPattern = @"'(.*):$", Color = Color.Blue },
+                 new { RegexPattern = @"\{|\}|\[|\]|\|=|!|:", Color = Color.Red },
+                                     new { RegexPattern = @"\(|)", Color = Color.ForestGreen }
             };
             var syntaxRulesLua = new[]{
-                    new { RegexPattern = @"\b(local|function|if|then|else|end|for|in|while|do|repeat|until|return|pairs|ipairs|)\b", Color = Color.Blue },
-                    new { RegexPattern = @"--(.*)$", Color = Color.Green },
+                    new { RegexPattern = @"\b(local|function|if|then|else|end|for|in|while|do|repeat|until|return|pairs|ipairs)\b", Color = Color.Blue },
+                    new { RegexPattern = @"--(.*)$:", Color = Color.Blue },
                     new { RegexPattern = @"\b(nil|true|false)\b", Color = Color.Red },
                     new { RegexPattern = @"""([^""]|"""")*""", Color = Color.Red },
-                    new { RegexPattern = @"\{|\}|\[|\]|\|=|!|:", Color = Color.Red }
+                    new { RegexPattern = @"\{|\}|\[|\]|\|=|!|", Color = Color.Red },
+                    new { RegexPattern = @"\(|\)", Color = Color.ForestGreen }
             };
 
             if (syntax=="lua") { 

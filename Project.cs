@@ -15,14 +15,14 @@ namespace VBLua.Core
         string[] mode = { "Solar2D", "Forms" };
         // <=  Projekt_Eigenschaften => //
         public static string? IDEPath; public string type; public string name; private Size displaySize; private Color bgColor; private Color fontColor;
-        public Scene MainScene = new("view1"); public readonly Scene MainFile = new("main"); public string info = "";
+        public Scene MainScene = new(mainfile); public readonly Scene MainFile = new("main"); public string info = "";
 
-        public Scene edit; public List<Scene>? formulare = new(); public string mainfile;
+        public Scene edit; public List<Scene>? formulare = new(); public static string mainfile ="view1";
 
         // ------------------- <= Init => ------------------ <= Init => ------------------ <= Init => ------------------------ 
-        public Project(string name, Form designer, string type, Size displaySize, bool newProject = true)
+        public Project(string name, Form designer, string type, Size displaySize, bool newProject = true, string mainScene = "view1")
         {
-            typ = mode[0]; IDEPath = AppSaves + name + "/"; mainfile = IDEPath + "main.lua";
+            typ = mode[0]; IDEPath = AppSaves + name + "/"; mainfile = IDEPath + "main.lua"; if (mainScene != "view1") { MainScene = null; MainScene = new(mainScene); }
             scenePick = MainScene; // <= Lese MainScene ein
             if (this.name == lastLoaded) { New(); }
             lastLoaded = name; Settings.Default.LastLoaded = lastLoaded;

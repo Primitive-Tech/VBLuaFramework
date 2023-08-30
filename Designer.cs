@@ -7,6 +7,9 @@ using System.Linq;
 using System.ComponentModel;
 using static VBLua.IDE.Designer;
 using System.Diagnostics;
+using static VB.Lua.GUIController.Menu1;
+using ScriptingTool;
+
 namespace VBLua.IDE
 {
     public partial class Designer : Form, AppCode, CodeUtils, Loader
@@ -14,20 +17,23 @@ namespace VBLua.IDE
         public static string? projektpick; Project me; static string? loadedProject; protected static string? solar2dPath;
         static Dictionary<string, Control> ctrList = new(); string mode = "Solar2D";
         List<KnownColor> fontColorList = new(); List<KnownColor> ColorList = new(); bool createNew = false;
-        VBLua.IDE.Toolstrip ts; public static Scene sceneInFocus;
+        VBLua.IDE.Toolstrip ts; public static Scene sceneInFocus;CoderControl CodeEdit; static Input? rtb1;
 
         //=============================================================================================================================
         // ------------------- <= Initializer => ------------------ //HighlightOwnCode
         public Designer()
         {
-            InitializeComponent(); getColors(); CodeEdit.Parent.Location = this.Location; CodeEdit.Init(); // <= Preloading_Visuals           
+            InitializeComponent(); getColors(); // <= Preloading_Visuals
+            CodeEdit = new(); CodeEdit.Show(); rtb1 = CodeEdit.CodeEdit;
         }
 
         private void Designer_Load(object sender, EventArgs e)
         {
             solar2dPath = Directory.GetCurrentDirectory() + "Corona Simulator.exe";//"\\
             string lastOpened = "Testengine"; loadedProject = lastOpened; Project.lastLoaded = lastOpened;
-            Loading(sender, e);
+            Loading(sender, e); List<dynamic> newlist = new(); foreach (var x in me.getElements().Values) { newlist.Add(x); }
+            ///Solar2DTableControl test = new("loool", newlist);test.GetLuaCodeFromTable();
+
         }
         //=============================================================================================================================
         private void Loading(object sender, EventArgs e)
@@ -45,7 +51,7 @@ namespace VBLua.IDE
         {
             if (Project.lastLoaded != null && 1 == 0) { me = new Project(Project.lastLoaded, this, "Solar2D", new Size(1920, 1080)); this.Controls.Add(sd); }
             else { me = new Project(pathWithName, this, "Solar2D", new Size(1920, 1080), newProject); this.Controls.Add(sd); }
-            LoadScreen(); if (me.scenePick != null) { me.scenePick.Res = this.Size; }
+            LoadScreen(); if (me.scenePick != null) { me.scenePick.Res = new(this.ScreenPanel.Size.Width, this.ScreenPanel.Height - mainmenustrip.Height); }
         }
         //============================== Screen =================================
         private void LoadScreen()
@@ -127,7 +133,7 @@ namespace VBLua.IDE
                 selected = true; ctr.MouseMove += me_MouseMove;
                 ControlHighlighter.continueHighlight = true; ControlHighlighter.Blinking(ctr);
                 ts = new(ctr);  // <= CodeEditor.KeyPressed +=richTextBox_KeyPress; this.Controls.Add(CodeEditor).Show()
-                CodeEdit.Text = PickedElement.createCode("--"); CodeEdit.Visible = true; this.Visible = true;
+                CodeEdit.Text =me.scenePick.name; CodeEdit.CodeEdit.Text= PickedElement.createCode("--"); CodeEdit.Visible = true; this.Visible = true;
             }
             else if (e.Button == MouseButtons.Right && ctr.Tag.ToStr().Contains(":/"))
             {
@@ -136,7 +142,6 @@ namespace VBLua.IDE
                 {
                     if (sd != null) { sd.Dispose(); }
                     ctr.ContextMenuStrip = new();
-                    Loader.InitializeContextMenu(ctr);
                     sd = null; sd = new(PickedElement, "view1"); sd.mode = "edit"; sd.Location = ctr.Location;
                     sd.type = PickedElement?.type; sd.Location = new(ScreenPanel.Location.X - (this.Width), ScreenPanel.Location.Y + (this.Height / 3)); ctrEdit = ctr;
                     sd.Visible = true; sd.BringToFront(); sd.Show(); sd.Okckl.Click += EditElement; sd.Okckl.Click += sd.closeMe; sd.delClk.MouseClick += DeleteElement;
@@ -233,13 +238,20 @@ namespace VBLua.IDE
                 if (System.IO.File.Exists(solar2dPath + "Corona Simulator.exe")) { string inf = "CoronaSimulator Deteteced!"; }
             }
         }
+        bool debuggerIsRunning = false;
         protected void openDebugger(object sender, EventArgs e)
         {
-            Process sim = new(); ProcessStartInfo inf = new();
-            inf.FileName = Directory.GetCurrentDirectory() + "\\debugger\\Corona.Shell.exe";//
-            inf.Arguments = Directory.GetCurrentDirectory() + "\\projects\\Testengine\\main.lua"; inf.UseShellExecute = false; sim.StartInfo = inf;
-            inf.WorkingDirectory = Directory.GetCurrentDirectory() + "\\debugger\\"; inf.CreateNoWindow = false; inf.RedirectStandardOutput = true;
-            using (sim) { sim.StartInfo = inf; sim.Start(); }
+            switch (debuggerIsRunning)
+            {
+                case (false):
+                    Process sim = new(); ProcessStartInfo inf = new();
+                    inf.FileName = Directory.GetCurrentDirectory() + "\\debugger\\Corona.Shell.exe";//
+                    inf.Arguments = Directory.GetCurrentDirectory() + "\\projects\\Testengine\\main.lua"; inf.UseShellExecute = false; sim.StartInfo = inf;
+                    inf.WorkingDirectory = Directory.GetCurrentDirectory() + "\\debugger\\"; inf.CreateNoWindow = false; inf.RedirectStandardOutput = true;
+                    using (sim) { sim.StartInfo = inf; sim.Start(); }
+                    //debuggerIsRunning = true;
+                    break;
+            }
         }
 
         //========= ======================================================================================================================== ==========================
@@ -278,7 +290,9 @@ namespace VBLua.IDE
         }
         private void TestButton_Click(object sender, EventArgs e)
         {
-            me.scenePick.createElementinApp(me.getElements()); ;
+            // me.scenePick.createElementinApp(me.getElements()); ;
+            string outp = Syntaxer.Convert(CodeEdit.CodeEdit.Text);
+
         }
 
         private void ScreenPanel_Reset(object sender, MouseEventArgs e)
@@ -293,6 +307,12 @@ namespace VBLua.IDE
                 clearScreen(sender, e); LoadScreen();
             }
         }
+
+        private void ScreenPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
 
     }
 }
