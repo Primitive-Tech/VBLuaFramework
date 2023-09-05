@@ -8,27 +8,18 @@ using PrimitiveServerV2;
 using System.Configuration;
 using System.Security.Permissions;
 using System.Text;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using System.Security.Policy;
+using static VBLua.IDE.Element;
 
 namespace VB.Lua.GUIController
 {
     public interface Loader
     {
-        public static void InitializeContextMenu(Control ctr)
+        //=====================================================================================
+        public static void InitializeTransitionsMenu(Control ctr,Element e, Point p, int Time = 750)
         {
             if (ctr.ContextMenuStrip!= null) { ctr.ContextMenuStrip.Items.Clear(); }   
-            // Function calls and descriptions
-            string[] functionCalls = new string[]
-            {
-                ".blink()",
-                ".dissolve()",
-                ".fadeIn()",
-                ".fadeOut()",
-                "moveBy()",
-                "moveTo()",
-                ".scaleBy()",
-                ".scaleTo()"
-            };
-
             string[] descriptions = new string[]
             {
                 "Repeatedly oscillates the alpha value of an object in and out over the timespan.",
@@ -41,14 +32,40 @@ namespace VB.Lua.GUIController
                 "Scales an object to the specified xScale and yScale amounts over a specified time."
             };
 
-            for (int i = 0; i < functionCalls.Length; i++)
+            for (int i = 0; i < ElementCodes.functionCalls.Length; i++)
             {
-                ToolStripMenuItem menuItem = new ToolStripMenuItem(functionCalls[i]);
+                ToolStripMenuItem menuItem = new ToolStripMenuItem(ElementCodes.functionCalls[i]);
                 menuItem.ToolTipText = descriptions[i];
-                string xxx = "transition." + functionCalls[i] + "()";// rect.fill
+                string xxx = $"transition.{ElementCodes.functionCalls[i]}({ e.name}, {{ time={Time}, x={p.X}, y={p.Y}, onComplete=listener }} )\n\r";// rect.fill
                 //menuItem.Click += MenuItem_Click;
                 ctr.ContextMenuStrip.Items.Add(menuItem);
             }
+        }
+        public static void RoundUP(Control ctr) {
+            System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+            path.AddEllipse(0, 0, ctr.Width, ctr.Height);
+            ctr.Region = new Region(path);
+
+
+        }
+        public static string Init_SceneSwitchAnimation(string sceneName,string type)
+        {
+            // Function calls and descriptions//sceneName
+            Dictionary<string, string> functionCalls = new Dictionary<string, string>
+            {
+                {  "fade", "composer.gotoScene('newScene', { effect = 'fade', time = 500 })"},
+                 { "slideLeft","composer.gotoScene('newScene', { effect = 'slideLeft', time = 500 })"},
+                 { "slideRight","composer.gotoScene('newScene', { effect = 'slideRight', time = 500 })"},
+                 { "slideUp","composer.gotoScene('newScene', { effect = 'slideUp',time = 500 })"},
+                 { "slideDown","composer.gotoScene('newScene', { effect = 'slideDown', time = 500 })"},
+
+            };
+            if (functionCalls.ContainsKey(type))
+            {
+                string callingCode = $"transition.{ functionCalls[type]}\n\r";
+                return callingCode;
+            }
+            return "Failed";
         }
 
     }
