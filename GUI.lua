@@ -1,12 +1,13 @@
 local widget = require "widget" local display = require "display"
 local composer = require "composer" local Module = require("Module")
+
 --#####################################################################################################################
 ------------------------------------------------
-
 This ={
     centerX =display.contentCenterX, centerY= display.contentCenterY,
     X=  display.actualContentWidth , Y=display.actualContentHeight 
 }
+
 --#####################################################################################################################
 --#####################################################################################################################
 ------------------------------------------------
@@ -101,18 +102,16 @@ function createSwitch(fnc)
     return switch
 end
 
-------------------------------------------------
-function createWebBrowser(address,X,Y, W,h)
-    local selectedLinkIndex = math.random(1, #Kapitel)
---    local Zahl = tostring(Kapitel[selectedLinkIndex])
- --   local address = "https://www.russian-online.net/de_start/tests/tests.php?fall=" .. Zahl
-    -- Create a native web view to display the URL
-    local webView = native.newWebView(address,X,Y, W,h)
+-----------------------------------------------
+function createWebBrowser(X,Y, W,h)
+    local webView = native.newWebView(X,Y, W,h)
     return webView
 end
+
+
 --#####################################################################################################################
 -- Function 1: Using display.newGroup() to organize elements
-function createInterfaceElement1(x, y, size, dataSet,fnc,align,btC,fC)
+function createInterfaceElement1(x, y,w,h, size, dataSet,fnc,align,btC,fC)
     local group = display.newGroup()
     local Direction = align or "right"
     local dummyFnc = function(event) end
@@ -123,11 +122,11 @@ function createInterfaceElement1(x, y, size, dataSet,fnc,align,btC,fC)
         height = h,
         horizontalScrollDisabled = true,
         verticalScrollDisabled = false
-    }) scrollView.x = x  scrollView.y = y
+    }) scrollView.x = x or 0 scrollView.y = y or 0
 
-    for i, pair in ipairs(dataSet) do
+    for i, Entry in ipairs(dataSet) do
         local text = display.newText({
-            text = pair.txt,
+            text = Entry.txt,
             x = x,
             y = y + (i - 1) * size, font = native.systemFontBold,
             fontSize = 9, align = Direction  -- Alignment parameter
@@ -138,16 +137,15 @@ function createInterfaceElement1(x, y, size, dataSet,fnc,align,btC,fC)
          local button = widget.newButton({
             width = widgetWidth,height = scrollView.height/#dataSet,label = ID,name=ID
             ,defaultFile="button2.png", overFile="button2-down.png",
-            onRelease = fnc or dummyFnc
+            onRelease = Entry.fnc or dummyFnc
         })
-        button.id = pair.id button:setFillColor(btC or 1)
+        button.id = Entry.id button:setFillColor(btC or 1)
         button.x, button.y = x + size * 2, y + (i - 1) * size
         text.y=button.y-(text.height/2)
   
         scrollView:insert(text) scrollView:insert(button)
         group:insert(scrollView)
     end
-
     return group
 end
 
@@ -161,6 +159,7 @@ local element1 = createInterfaceElement1(100, 0, 75, data)
 end
 --]]
 
+--==================================================================
 function createScroll(w,h,x,y,bgC,btC)
     local sceneGroup = display.newGroup()  -- Gruppe zur Aufnahme aller Widgets
     local sceneData = {
@@ -202,7 +201,6 @@ function createScroll(w,h,x,y,bgC,btC)
     return sceneGroup
 end
 --------------------------------------
-
 --######################################################################
 ----------------------------------------------------------------------
 ------------------------------------------------
@@ -305,12 +303,6 @@ function RenderScreen(formX,formY,w,h)
     return  formX.y + w * 0.5,formY - h* 0.5
 end
 math.randomseed( os.time() )
-------------------------------------------------
-
-
-
-
-------------------------------------------------
 ------------------------------------------------
 
 --##################################################################################################

@@ -1,3 +1,4 @@
+
 local math = require("math") 
 --############################################################################################################
 ------------------------------- Implement_ObjectMethods ----------------------------------------
@@ -65,7 +66,7 @@ function FromFile( file,setting,readmode )
     return stringified
 end
 
------------------- MATHE ------------------
+--====================== MATHE =========================
 function round( x )
   if x ~= nil then
   return math.floor(x)
@@ -100,7 +101,7 @@ function ratio(x,y)
         return x / y 
     end
 end
-------------------- Strings -----------------------
+--================== Strings ======================
 str={ }
 function str:replace (s,word,rep )
     return s:gsub( word, rep) or ""
@@ -124,7 +125,25 @@ end
 function cInt( x )
     return tonumber(x) or x
 end
-function Randomize(x,y,z) return math.random(x,y,z) end
+
+--================== Filesystem ======================
+function SaveAsByte(file)
+  local funcAsByte= string.dump (function() return 5+2 end)
+  local f = io.open(file, "wb")   
+  f:write(funcAsByte)f:close()
+  return true, 'No Errors'
+end
+
+function Read(file)
+  local f=io.open(file,"r")  
+  funcAsString=f:read("*all") f:close()
+  out=assert (loadstring(funcAsString))() --> 
+  return true, 'No Errors'
+end
+
+--==================== ETC ======================
+
+function Randomize(x,y) return math.random(x,y) end
 
 function Console(command)
     local console = assert(io.popen(command))
